@@ -1,13 +1,10 @@
-// main.cpp
 #include "BudgetModel.h"
 #include <QApplication>
-#include <QTableView>
+#include <QTableWidget>
 
 int main(int argc, char *argv[]) {
   QApplication a(argc, argv);
-  QTableView tableView;
-  BudgetModel budget;
-  tableView.setModel(&budget);
-  tableView.show();
+  QTableWidget *transactionTable = createTransactionTable(5);
+  transactionTable->show();
   return a.exec();
 }

@@ -1,17 +1,27 @@
-// mymodel.cpp
+// File that implements custom table view for budget
 #include "BudgetModel.h"
 
-BudgetModel::BudgetModel(QObject *parent) : QAbstractTableModel(parent) {}
+QTableWidget *createTransactionTable(int dim) {
+  QTableWidget *table = new QTableWidget(dim, 4);
+  QStringList heading = {"Date", "Price", "Description", "Category"};
 
-int BudgetModel::rowCount(const QModelIndex & /*parent*/) const { return 2; }
+  QStringList categories = {"Housing", "Food", "Pets", "Transportation"};
 
-int BudgetModel::columnCount(const QModelIndex & /*parent*/) const { return 3; }
+  table->setHorizontalHeaderLabels(heading);
 
-QVariant BudgetModel::data(const QModelIndex &index, int role) const {
-  if (role == Qt::DisplayRole)
-    return QString("Row%1, Column%2")
-        .arg(index.row() + 1)
-        .arg(index.column() + 1);
+  // Hard coded initially
+  for (int j = 0; j <= table->rowCount(); j++) {
+    QComboBox *transactionCategories = new QComboBox();
+    transactionCategories->addItems(categories);
+    table->setCellWidget(j, 3, transactionCategories);
+  }
 
-  return QVariant();
+  return table;
 }
+
+// Add number amount of rows to table
+QTableWidget *addRows(int number, QTableWidget *table) {
+  int currentRows = table->rowCount();
+  table->setRowCount(currentRows + number);
+  return table;
+};
