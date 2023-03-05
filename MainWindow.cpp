@@ -1,22 +1,35 @@
 // Create the MainWindow
 #include "MainWindow.h"
 #include "BudgetModel.h"
+#include <iostream>
 
-BudgetMainWindow::BudgetMainWindow(QTableWidget *centWidget,
-                                   std::vector<QDockWidget *> dockWidgets) {
-  centralWidget = centWidget;
-  widgets = dockWidgets;
+//
+BudgetMainWindow::BudgetMainWindow(QFile *file, QTableWidget *tableWidget) {
+  table = tableWidget;
+  mainWindow = new QMainWindow();
+  toolbar = new QToolBar();
+  xml = new xmlHandler(file);
 }
 
-QMainWindow *BudgetMainWindow::createMainWindow() {
-  QMainWindow *mainWindow = new QMainWindow();
+void BudgetMainWindow::createMainWindow() {
+  // Defining Buttons
+  saveButton = new QPushButton("Save Filessss", this);
+  addLineButton = new QPushButton("Add Lines to Table", this);
 
-  mainWindow->setCentralWidget(centralWidget);
+  // Adding buttons to toolbar
+  toolbar->addWidget(saveButton);
+  toolbar->addWidget(addLineButton);
 
-  for (auto &widget : widgets) {
-    mainWindow->addDockWidget(Qt::TopDockWidgetArea, widget);
-  }
-  return mainWindow;
+  // Connect Buttons
+  connect(addLineButton, &QPushButton::released, this,
+          &BudgetMainWindow::handleRowButton);
+  connect(saveButton, &QPushButton::released, this,
+          &BudgetMainWindow::handleSaveButton);
+  std::cout << "Connected buttons" << std::endl;
+
+  // Adding toolbar to main window
+  mainWindow->setCentralWidget(table);
+  mainWindow->addToolBar(Qt::TopToolBarArea, toolbar);
 }
 
 std::vector<QDockWidget *> BudgetMainWindow::setWidgets() {
@@ -33,3 +46,32 @@ std::vector<QDockWidget *> BudgetMainWindow::setWidgets() {
   std::vector<QDockWidget *> widgets = {dock1, dock2};
   return widgets;
 }
+
+// Used to add numberCells to table
+void BudgetMainWindow::addCells(int numberCells) {
+  std::cout << "You clicked the buttons" << std::endl;
+  // Get current cell count
+  int currentCells = table->rowCount();
+  // Increase table row count
+  table->setRowCount(currentCells + numberCells);
+}
+
+void BudgetMainWindow::handleRowButton() {
+  addLineButton->setText("You Clicked Me");
+  addLineButton->resize(100, 100);
+  table = addRows(20, table);
+}
+
+void BudgetMainWindow::handleSaveButton() {
+  std::cout << "About to read Data" << std::endl;
+  std::cout << table->item(1, 1) << std::endl;
+  std::vector<std::vector<QString>> *outputData = readData(table);
+  // std::vector<std::vector<QString>> *output_ptr = &outputData;
+  //  FIXME finish implementing this
+  std::cout << "Right before Writing" << std::endl;
+  xml->writeToFile(outputData);
+}
+
+void BudgetMainWindow::readTableData() { readData(table); }
+
+void BudgetMainWindow::showWindow() { mainWindow->show(); }

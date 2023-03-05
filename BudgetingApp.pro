@@ -5,7 +5,7 @@
 TEMPLATE = app
 TARGET = BudgetingApp
 INCLUDEPATH += .
-QT += widgets
+QT += core widgets
 # You can make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
 # Please consult the documentation of the deprecated API in order to know
@@ -14,5 +14,5 @@ QT += widgets
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 # Input
-HEADERS += BudgetModel.h
-SOURCES += main.cpp BudgetModel.cpp
+HEADERS += BudgetModel.h MainWindow.h XML_Handler.h
+SOURCES += main.cpp BudgetModel.cpp MainWindow.cpp XML_Handler.cpp
